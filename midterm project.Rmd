@@ -64,10 +64,10 @@ kable(baseball_opp)
 # 2013
 # Summary of attendance in seanson 2013 with different opponent.
 # Group by different opponents and arrange the attendance from high to low
-baseball_opp <- baseball_2013 %>% group_by(Opp) %>% summarise(avg_attendance = mean(Attendance))
-baseball_opp <- arrange(baseball_opp, desc(avg_attendance))
+baseball_oppo <- baseball_2013 %>% group_by(Opp) %>% summarise(avg_attendance = mean(Attendance))
+baseball_oppo <- arrange(baseball_opp, desc(avg_attendance))
 
-ggplot(baseball_opp, aes(Opp, avg_attendance)) + 
+ggplot(baseball_oppo, aes(Opp, avg_attendance)) + 
   geom_bar(stat = "identity") +
   ggtitle("Average attendance vs. opponents in 2013")
 

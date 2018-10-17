@@ -25,6 +25,7 @@ ui <- pageWithSidebar(
                               "Baseball_Attendance&Weather2017",
                               "Baseball_Attendance&Weather2013",
                               "Baseball_Attendance&Opponent2017",
+                              "Baseball_Attendance&Opponent2013",
                               "Basketball_Attendance_Weather"
                               # "Basketball_Attendance_Players"
                 )),
@@ -55,6 +56,8 @@ baseball_2017<-Baseball_Attendance_weather %>% filter(Year == 2017)
 baseball_opp <- baseball_2017 %>% group_by(Opp) %>% summarise(avg_attendance = mean(Attendance))
 baseball_opp <- arrange(baseball_opp, desc(avg_attendance))
 baseball_2013<-Baseball_Attendance_weather %>% filter(Year == 2013)
+baseball_oppo <- baseball_2013 %>% group_by(Opp) %>% summarise(avg_attendance = mean(Attendance))
+baseball_oppo <- arrange(baseball_oppo, desc(avg_attendance))
 Basketball_Attendance_weather<-read.csv("basketball_weather.csv")
 # Define server logic required to draw a histogram
 server <- function(input, output) {
@@ -65,6 +68,7 @@ server <- function(input, output) {
            "Baseball_Attendance&Weather2017"=baseball_2017,
            "Baseball_Attendance&Weather2013"=baseball_2013,
            "Baseball_Attendance&Opponent2017"=baseball_opp,
+           "Baseball_Attendance&Opponent2013"=baseball_oppo,
            "Basketball_Attendance_Weather"=Basketball_Attendance_weather)
     #"Basketball_Attendance_Players"=basketball_Attendance_Players
   })
@@ -118,6 +122,11 @@ server <- function(input, output) {
       ggplot(baseball_opp, aes(Opp, avg_attendance)) + 
         geom_bar(stat = "identity") +
         ggtitle("Average attendance vs. opponents in 2017")
+    }
+    else if(input$dataset=="Baseball_Attendance&Opponent2013"){
+      ggplot(baseball_oppo, aes(Opp, avg_attendance)) + 
+        geom_bar(stat = "identity") +
+        ggtitle("Average attendance vs. opponents in 2013")
     }
     
   })
