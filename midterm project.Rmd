@@ -12,105 +12,41 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 baseball <- read.csv("baseball_weather.csv", header = T)
+basketball <- read.csv("basketball_weather.csv", header = T)
 library(dplyr)
 library(ggplot2)
 library(knitr)
+baseball <- select(baseball, Gm., Year, DATE, X, Tm, Opp, W.L, Win, Loss, Save, Time, D.N, Attendance, TAVG, TMAX, TMIN)
+write.csv(baseball, file = "baseball00.csv")
 ```
 
 ```{r}
-# There appears to be a weak but slightly positive relationship between  average temperature and attendance over the past six seasons
+# Relationship between average temperature with attendance of 6 seasons
 ggplot(baseball, mapping = aes(x = TAVG, y = Attendance)) +
   geom_point(mapping = aes(color = Year)) +
-  geom_smooth() + 
-  ggtitle("Average Temperature vs. Attendance (2012 - 2017)") +
-  theme(plot.title = element_text(hjust = 0.5)) +
-  xlab("Average Temperature on Game Day (°F)") + 
-  ylab("Total Attendance")
-
+  geom_smooth()
 ```
 
+There appears to be a weak but slightly positive relationship between  average temperature and attendance over the past six seasons.
+
 ```{r}
-#Looking at each of the seasons individually, there also appears to be a weak positive relationship between temperature and attendance. 
-
-#NOTE: INVESTIGATE N/A VALUES
-
 # 2017 Season
 baseball_2017 <- baseball %>% filter(Year == 2017)
 # Relationship between average temperature with attendance of season 2017
-ggplot(baseball_2017, aes(TAVG, Attendance)) + 
-  geom_point(color = "blue") + 
-  geom_smooth(method = "lm", color = "red") + 
-  ggtitle("Average Temperature vs. Attendance (2017)") +
-  theme(plot.title = element_text(hjust = 0.5)) +
-  xlab("Average Temperature on Game Day (°F)") + 
-  ylab("Total Attendance")
+ggplot(baseball_2017, aes(TAVG, Attendance)) + geom_point(color = "blue") + 
+  geom_smooth(method = "lm", color = "red") + ggtitle("Temperature vs. Attendance in 2017")
 
-
-# 2016 Season
-baseball_2016 <- baseball %>% filter(Year == 2016)
-# Relationship between average temperature with attendance of season 2016
-ggplot(baseball_2016, aes(TAVG, Attendance)) + 
-  geom_point(color = "blue") + 
-  geom_smooth(method = "lm", color = "red") +
-  ggtitle("Average Temperature vs. Attendance (2016)") +
-  theme(plot.title = element_text(hjust = 0.5)) +
-  xlab("Average Temperature on Game Day (°F)") + 
-  ylab("Total Attendance")
-
-# 2015 Season
-baseball_2015 <- baseball %>% filter(Year == 2015)
-# Relationship between average temperature with attendance of season 2015
-ggplot(baseball_2015, aes(TAVG, Attendance)) + 
-  geom_point(color = "blue") + 
-  geom_smooth(method = "lm", color = "red") + 
-  ggtitle("Average Temperature vs. Attendance (2015)") +
-  theme(plot.title = element_text(hjust = 0.5)) +
-  xlab("Average Temperature on Game Day (°F)") + 
-  ylab("Total Attendance")
-
-# 2014 Season
-baseball_2014 <- baseball %>% filter(Year == 2014)
-# Relationship between average temperature with attendance of season 2014
-ggplot(baseball_2014, aes(TAVG, Attendance)) + 
-  geom_point(color = "blue") + 
-  geom_smooth(method = "lm", color = "red") + 
-  ggtitle("Average Temperature vs. Attendance (2014)") +
-  theme(plot.title = element_text(hjust = 0.5)) +
-  xlab("Average Temperature on Game Day (°F)") + 
-  ylab("Total Attendance")
 
 # 2013 Season
 baseball_2013 <- baseball %>% filter(Year == 2013)
 # Relationship between average temperature with attendance of season 2013
-ggplot(baseball_2013, aes(TAVG, Attendance)) + 
-  geom_point(color = "blue") + 
-  geom_smooth(method = "lm", color = "red") + 
-  ggtitle("Average Temperature vs. Attendance (2013)") +
-  theme(plot.title = element_text(hjust = 0.5)) +
-  xlab("Average Temperature on Game Day (°F)") + 
-  ylab("Total Attendance")
-
-# 2012 Season
-baseball_2012 <- baseball %>% filter(Year == 2012)
-# Relationship between average temperature with attendance of season 2012
-ggplot(baseball_2012, aes(TAVG, Attendance)) + 
-  geom_point(color = "blue") + 
-  geom_smooth(method = "lm", color = "red") + 
-  ggtitle("Average Temperature vs. Attendance (2012)") +
-  theme(plot.title = element_text(hjust = 0.5)) +
-  xlab("Average Temperature on Game Day (°F)") + 
-  ylab("Total Attendance")
-
-
+ggplot(baseball_2013, aes(TAVG, Attendance)) + geom_point(color = "blue") + 
+  geom_smooth(method = "lm", color = "red") + ggtitle("Temperature vs. Attendance in 2013")
 ```
 
 ```{r}
 # 2017
 # Summary of attendance in seanson 2017 with different opponent.
-ggplot(data = baseball_2017) + 
-  stat_summary(mapping = aes(x = Opp, y = Attendance), fun.ymin = min, fun.ymax = max, fun.y = median) +
-  ggtitle("Attendance summary in 2017")
-
 # Group by different opponents and arrange the attendance from high to low
 baseball_opp <- baseball_2017 %>% group_by(Opp) %>% summarise(avg_attendance = mean(Attendance))
 baseball_opp <- arrange(baseball_opp, desc(avg_attendance))
@@ -127,10 +63,6 @@ kable(baseball_opp)
 ```{r}
 # 2013
 # Summary of attendance in seanson 2013 with different opponent.
-ggplot(data = baseball_2013) + 
-  stat_summary(mapping = aes(x = Opp, y = Attendance), fun.ymin = min, fun.ymax = max, fun.y = median) +
-  ggtitle("Attendance summary in 2013")
-
 # Group by different opponents and arrange the attendance from high to low
 baseball_opp <- baseball_2013 %>% group_by(Opp) %>% summarise(avg_attendance = mean(Attendance))
 baseball_opp <- arrange(baseball_opp, desc(avg_attendance))
@@ -144,9 +76,6 @@ kable(baseball_opp)
 
 ```{r}
 # Summary of attendance in 6 seansons with different opponent.
-ggplot(data = baseball) + 
-  stat_summary(mapping = aes(x = Opp, y = Attendance), fun.ymin = min, fun.ymax = max, fun.y = median)
-
 # Group by different opponents and arrange the attendance from high to low
 baseball_opp <- baseball %>% group_by(Opp) %>% summarise(avg_attendance = mean(Attendance))
 baseball_opp <- arrange(baseball_opp, desc(avg_attendance))
@@ -157,24 +86,4 @@ ggplot(baseball_opp, aes(Opp, avg_attendance)) +
 kable(baseball_opp)
 ```
 
-```{r}
-baseball_dn <- baseball_2017 %>% group_by(D.N) %>% summarise(avg_attendance = mean(Attendance))
-baseball_dn <- arrange(baseball_dn, desc(avg_attendance))
-ggplot(baseball_dn, aes(D.N, avg_attendance)) +
-  geom_bar(stat = "identity") + ggtitle("Day Attendance vs Night Attendance in 2017")
-```
-
-```{r}
-baseball_dn <- baseball_2016 %>% group_by(D.N) %>% summarise(avg_attendance = mean(Attendance))
-baseball_dn <- arrange(baseball_dn, desc(avg_attendance))
-ggplot(baseball_dn, aes(D.N, avg_attendance)) +
-  geom_bar(stat = "identity") + ggtitle("Day Attendance vs Night Attendance in 2016")
-```
-
-```{r}
-baseball_dn <- baseball_2013 %>% group_by(D.N) %>% summarise(avg_attendance = mean(Attendance))
-baseball_dn <- arrange(baseball_dn, desc(avg_attendance))
-ggplot(baseball_dn, aes(D.N, avg_attendance)) +
-  geom_bar(stat = "identity")  + ggtitle("Day Attendance vs Night Attendance in 2013")
-```
 
