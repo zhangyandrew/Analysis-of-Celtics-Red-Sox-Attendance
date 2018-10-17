@@ -15,7 +15,7 @@ library(tidyverse)
 ui <- pageWithSidebar(
   
   # Application title
-  titlePanel("RedSoxAndCelticsAttendanceAnalysis"),
+  titlePanel("Red Sox and Celtics Attendance Analysis"),
   
   # Sidebar with controls to select a dataset and specify the number
   # of observations to view
