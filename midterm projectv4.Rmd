@@ -344,3 +344,223 @@ plot14
 plot13
 ```
 
+## Basketball 
+```{r}
+bball12 <- read.csv("attend2012.csv")
+bball13 <- read.csv("attend2013.csv")
+bball14 <- read.csv("attend2014.csv")
+bball15 <- read.csv("attend2015.csv")
+bball16 <- read.csv("attend2016.csv")
+
+bball <- rbind(bball12, bball13, bball14, bball15, bball16)
+bball$Year <- factor(bball$Year)
+colnames(bball)[3] <- "Opp"
+bball$Opp <- factor(bball$Opp)
+```
+
+```{r}
+ggplot(bball, mapping = aes(x = TAVG, y = Attendance)) +
+  geom_point(mapping = aes(color = Year)) +
+  geom_smooth() + 
+  ggtitle("Average Temperature vs. Attendance (2012 - 2017)") +
+  theme(axis.title.x = element_text(size = 14)) +
+  theme(axis.title.y = element_text(size = 14)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+  xlab("Average Temperature on Game Day (°F)") + 
+  ylab("Attendance")
+```
+
+
+```{r}
+# 2017 Season
+bball_2017 <- bball %>% filter(Year == 2017)
+# Relationship between average temperature with attendance of season 2017
+ggplot(bball_2017, aes(TAVG, Attendance)) + 
+  geom_point(color = "blue") + 
+  geom_smooth(method = "lm", color = "red") + 
+  ggtitle("Average Temperature vs. Attendance (2017)") +
+  theme(axis.title.x = element_text(size = 14)) +
+  theme(axis.title.y = element_text(size = 14)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+  xlab("Average Temperature on Game Day (°F)") + 
+  ylab("Attendance")
+
+
+# 2016 Season
+bball_2016 <- bball %>% filter(Year == 2016)
+# Relationship between average temperature with attendance of season 2016
+ggplot(bball_2016, aes(TAVG, Attendance)) + 
+  geom_point(color = "blue") + 
+  geom_smooth(method = "lm", color = "red") +
+  ggtitle("Average Temperature vs. Attendance (2016)") +
+  theme(axis.title.x = element_text(size = 14)) +
+  theme(axis.title.y = element_text(size = 14)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+  xlab("Average Temperature on Game Day (°F)") + 
+  ylab("Attendance")
+
+# 2015 Season
+bball_2015 <- bball %>% filter(Year == 2015)
+# Relationship between average temperature with attendance of season 2015
+ggplot(bball_2015, aes(TAVG, Attendance)) + 
+  geom_point(color = "blue") + 
+  geom_smooth(method = "lm", color = "red") + 
+  ggtitle("Average Temperature vs. Attendance (2015)") +
+  theme(axis.title.x = element_text(size = 14)) +
+  theme(axis.title.y = element_text(size = 14)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+  xlab("Average Temperature on Game Day (°F)") + 
+  ylab("Attendance")
+
+# 2014 Season
+bball_2014 <- bball %>% filter(Year == 2014)
+# Relationship between average temperature with attendance of season 2014
+ggplot(bball_2014, aes(TAVG, Attendance)) + 
+  geom_point(color = "blue") + 
+  geom_smooth(method = "lm", color = "red") + 
+  ggtitle("Average Temperature vs. Attendance (2014)") +
+  theme(axis.title.x = element_text(size = 14)) +
+  theme(axis.title.y = element_text(size = 14)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+  xlab("Average Temperature on Game Day (°F)") + 
+  ylab("Attendance")
+
+# 2013 Season
+bball_2013 <- bball %>% filter(Year == 2013)
+# Relationship between average temperature with attendance of season 2013
+
+bball_2013$TAVG <- (bball_2013$TMAX + bball_2013$TMIN)/2
+ggplot(bball_2013, aes(TAVG, Attendance)) + 
+  geom_point(color = "blue") + 
+  geom_smooth(method = "lm", color = "red") + 
+  ggtitle("Average Temperature vs. Attendance (2013)") +
+  theme(axis.title.x = element_text(size = 14)) +
+  theme(axis.title.y = element_text(size = 14)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+  xlab("Average Temperature on Game Day (°F)") + 
+  ylab("Attendance")
+```
+
+```{r}
+# 2017
+# Summary of attendance in seanson 2017 with different opponent.
+# Group by different opponents and arrange the attendance from high to low
+bball_opp17 <- bball_2017 %>% group_by(Opp) %>% summarise(avg_attendance = round(mean(Attendance),,digits = 0))
+bball_opp17 <- arrange(bball_opp17, desc(avg_attendance))
+
+ggplot(bball_opp17, aes(Opp, avg_attendance)) + 
+  geom_bar(stat = "identity") +
+  ggtitle("Average Attendance vs. Opponents in 2017") +
+  theme(axis.title.x = element_text(size = 14)) +
+  theme(axis.title.y = element_text(size = 14)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+  xlab("Opponent") + 
+  ylab("Average Attendance") 
+
+
+knitr::kable(bball_opp17)
+```
+
+```{r}
+# 2016
+# Summary of attendance in seanson 2016 with different opponent.
+# Group by different opponents and arrange the attendance from high to low
+bball_opp16 <- bball_2016 %>% group_by(Opp) %>% summarise(avg_attendance = round(mean(Attendance),digits = 0))
+bball_opp16 <- arrange(bball_opp16, desc(avg_attendance))
+
+ggplot(bball_opp16, aes(Opp, avg_attendance)) + 
+  geom_bar(stat = "identity") +
+  ggtitle("Average Attendance vs. Opponents in 2016") +
+  theme(axis.title.x = element_text(size = 14)) +
+  theme(axis.title.y = element_text(size = 14)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+  xlab("Opponent") + 
+  ylab("Average Attendance") 
+
+
+knitr::kable(bball_opp16)
+```
+
+```{r}
+# 2015
+# Summary of attendance in seanson 2016 with different opponent.
+# Group by different opponents and arrange the attendance from high to low
+bball_opp15 <- bball_2015 %>% group_by(Opp) %>% summarise(avg_attendance = round(mean(Attendance),digits = 0))
+bball_opp15 <- arrange(bball_opp15, desc(avg_attendance))
+
+ggplot(bball_opp15, aes(Opp, avg_attendance)) + 
+  geom_bar(stat = "identity") +
+  ggtitle("Average Attendance vs. Opponents in 2015") +
+  theme(axis.title.x = element_text(size = 14)) +
+  theme(axis.title.y = element_text(size = 14)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+  xlab("Opponent") + 
+  ylab("Average Attendance") 
+
+
+knitr::kable(bball_opp15)
+```
+
+```{r}
+# 2014
+# Summary of attendance in seanson 2016 with different opponent.
+# Group by different opponents and arrange the attendance from high to low
+bball_opp14 <- bball_2014 %>% group_by(Opp) %>% summarise(avg_attendance = round(mean(Attendance),,digits = 0))
+bball_opp14 <- arrange(bball_opp14, desc(avg_attendance))
+
+ggplot(bball_opp14, aes(Opp, avg_attendance)) + 
+  geom_bar(stat = "identity") +
+  ggtitle("Average Attendance vs. Opponents in 2014") +
+  theme(axis.title.x = element_text(size = 14)) +
+  theme(axis.title.y = element_text(size = 14)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+  xlab("Opponent") + 
+  ylab("Average Attendance") 
+
+
+knitr::kable(bball_opp14)
+```
+
+```{r}
+# 2013
+# Summary of attendance in seanson 2013 with different opponent.
+# Group by different opponents and arrange the attendance from high to low
+bball_opp13 <- bball_2013 %>% group_by(Opp) %>% summarise(avg_attendance = round(mean(Attendance),digits = 0))
+bball_opp13 <- arrange(bball_opp13, desc(avg_attendance))
+
+ggplot(bball_opp13, aes(Opp, avg_attendance)) + 
+  geom_bar(stat = "identity") +
+  ggtitle("Average Attendance vs. Opponents in 2013")+
+  theme(axis.title.x = element_text(size = 14)) +
+  theme(axis.title.y = element_text(size = 14)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+  xlab("Opponent") + 
+  ylab("Average Attendance")
+
+
+knitr::kable(bball_opp13)
+```
+
+```{r}
+# Summary of attendance in 6 seansons with different opponent.
+# Group by different opponents and arrange the attendance from high to low
+bball_opp <- bball %>% group_by(Opp) %>% summarise(avg_attendance = round(mean(Attendance),digits = 0))
+bball_opp <- arrange(bball_opp, desc(avg_attendance))
+
+ggplot(bball_opp, aes(Opp, avg_attendance)) +
+  geom_bar(stat = "identity") + ggtitle("Average Attendance vs. Opponents in Six Seasons") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(axis.title.x = element_text(size = 14)) +
+  theme(axis.title.y = element_text(size = 14)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+  xlab("Opponent") + 
+  ylab("Average Attendance")
+
+knitr::kable(bball_opp)
+```
+
