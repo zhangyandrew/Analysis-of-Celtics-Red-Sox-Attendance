@@ -1,0 +1,346 @@
+---
+title: "midterm_project"
+author: "Ningze Zu"
+date: 
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(scales)
+library(gridExtra)
+baseball <- read.csv("baseball_weather.csv", header = T) %>% filter(X.1 != "@")
+basketball <- read.csv("basketball_weather.csv", header = T)
+baseball11 <- read.csv("baseball_weather.csv", header = T) %>% filter(X.1 != "@")
+baseball <- select(baseball, Gm., Year, DATE, X, Tm, Opp, W.L, Win, Loss, Save, Time, D.N, Attendance, TAVG, TMAX, TMIN)
+write.csv(baseball, file = "baseball00.csv")
+```
+
+```{r}
+# There appears to be a weak but slightly positive relationship between  average temperature and attendance over the past six seasons
+ggplot(baseball, mapping = aes(x = TAVG, y = Attendance)) +
+  geom_point(mapping = aes(color = Year)) +
+  geom_smooth() + 
+  ggtitle("Average Temperature vs. Attendance (2012 - 2017)") +
+  theme(axis.title.x = element_text(size = 14)) +
+  theme(axis.title.y = element_text(size = 14)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+  xlab("Average Temperature on Game Day (Degrees F)") + 
+  ylab("Attendance")
+```
+
+There appears to be a weak but slightly positive relationship between  average temperature and attendance over the past six seasons.
+
+```{r}
+# 2017 Season
+baseball_2017 <- baseball %>% filter(Year == 2017)
+# Relationship between average temperature with attendance of season 2017
+ggplot(baseball_2017, aes(TAVG, Attendance)) + 
+  geom_point(color = "blue") + 
+  geom_smooth(method = "lm", color = "red") + 
+  ggtitle("Average Temperature vs. Attendance (2017)") +
+  theme(axis.title.x = element_text(size = 14)) +
+  theme(axis.title.y = element_text(size = 14)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+  xlab("Average Temperature on Game Day (Degrees F)") + 
+  ylab("Attendance")
+
+
+# 2016 Season
+baseball_2016 <- baseball %>% filter(Year == 2016)
+# Relationship between average temperature with attendance of season 2016
+ggplot(baseball_2016, aes(TAVG, Attendance)) + 
+  geom_point(color = "blue") + 
+  geom_smooth(method = "lm", color = "red") +
+  ggtitle("Average Temperature vs. Attendance (2016)") +
+  theme(axis.title.x = element_text(size = 14)) +
+  theme(axis.title.y = element_text(size = 14)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+  xlab("Average Temperature on Game Day (Degrees F)") + 
+  ylab("Attendance")
+
+# 2015 Season
+baseball_2015 <- baseball %>% filter(Year == 2015)
+# Relationship between average temperature with attendance of season 2015
+ggplot(baseball_2015, aes(TAVG, Attendance)) + 
+  geom_point(color = "blue") + 
+  geom_smooth(method = "lm", color = "red") + 
+  ggtitle("Average Temperature vs. Attendance (2015)") +
+  theme(axis.title.x = element_text(size = 14)) +
+  theme(axis.title.y = element_text(size = 14)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+  xlab("Average Temperature on Game Day (Degrees F)") + 
+  ylab("Attendance")
+
+# 2014 Season
+baseball_2014 <- baseball %>% filter(Year == 2014)
+# Relationship between average temperature with attendance of season 2014
+ggplot(baseball_2014, aes(TAVG, Attendance)) + 
+  geom_point(color = "blue") + 
+  geom_smooth(method = "lm", color = "red") + 
+  ggtitle("Average Temperature vs. Attendance (2014)") +
+  theme(axis.title.x = element_text(size = 14)) +
+  theme(axis.title.y = element_text(size = 14)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+  xlab("Average Temperature on Game Day (Degrees F)") + 
+  ylab("Attendance")
+
+# 2013 Season
+baseball_2013 <- baseball %>% filter(Year == 2013)
+# Relationship between average temperature with attendance of season 2013
+ggplot(baseball_2013, aes(TAVG, Attendance)) + 
+  geom_point(color = "blue") + 
+  geom_smooth(method = "lm", color = "red") + 
+  ggtitle("Average Temperature vs. Attendance (2013)") +
+  theme(axis.title.x = element_text(size = 14)) +
+  theme(axis.title.y = element_text(size = 14)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+  xlab("Average Temperature on Game Day (Degrees F)") + 
+  ylab("Attendance")
+```
+
+```{r}
+# 2017
+# Summary of attendance in seanson 2017 with different opponent.
+# Group by different opponents and arrange the attendance from high to low
+baseball_opp17 <- baseball_2017 %>% group_by(Opp) %>% summarise(avg_attendance = round(mean(Attendance),,digits = 0))
+baseball_opp17 <- arrange(baseball_opp, desc(avg_attendance))
+
+ggplot(baseball_opp17, aes(Opp, avg_attendance)) + 
+  geom_bar(stat = "identity") +
+  ggtitle("Average Attendance vs. Opponents in 2017") +
+  theme(axis.title.x = element_text(size = 14)) +
+  theme(axis.title.y = element_text(size = 14)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+  xlab("Opponent") + 
+  ylab("Average Attendance") 
+
+
+kable(baseball_opp)
+
+# Based on the summary plot and average attendance table with different opponents,
+```
+```{r}
+# 2016
+# Summary of attendance in seanson 2016 with different opponent.
+# Group by different opponents and arrange the attendance from high to low
+baseball_opp16 <- baseball_2016 %>% group_by(Opp) %>% summarise(avg_attendance = round(mean(Attendance),digits = 0))
+baseball_opp16 <- arrange(baseball_opp16, desc(avg_attendance))
+
+ggplot(baseball_opp16, aes(Opp, avg_attendance)) + 
+  geom_bar(stat = "identity") +
+  ggtitle("Average Attendance vs. Opponents in 2016") +
+  theme(axis.title.x = element_text(size = 14)) +
+  theme(axis.title.y = element_text(size = 14)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+  xlab("Opponent") + 
+  ylab("Average Attendance") 
+
+
+kable(baseball_opp16)
+
+# Based on the summary plot and average attendance table with different opponents,
+
+```
+
+```{r}
+# 2015
+# Summary of attendance in seanson 2016 with different opponent.
+# Group by different opponents and arrange the attendance from high to low
+baseball_opp15 <- baseball_2015 %>% group_by(Opp) %>% summarise(avg_attendance = round(mean(Attendance),digits = 0))
+baseball_opp15 <- arrange(baseball_opp15, desc(avg_attendance))
+
+ggplot(baseball_opp15, aes(Opp, avg_attendance)) + 
+  geom_bar(stat = "identity") +
+  ggtitle("Average Attendance vs. Opponents in 2015") +
+  theme(axis.title.x = element_text(size = 14)) +
+  theme(axis.title.y = element_text(size = 14)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+  xlab("Opponent") + 
+  ylab("Average Attendance") 
+
+
+kable(baseball_opp15)
+
+# Based on the summary plot and average attendance table with different opponents,
+
+
+```
+
+```{r}
+# 2014
+# Summary of attendance in seanson 2016 with different opponent.
+# Group by different opponents and arrange the attendance from high to low
+baseball_opp14 <- baseball_2014 %>% group_by(Opp) %>% summarise(avg_attendance = round(mean(Attendance),,digits = 0))
+baseball_opp14 <- arrange(baseball_opp14, desc(avg_attendance))
+
+ggplot(baseball_opp14, aes(Opp, avg_attendance)) + 
+  geom_bar(stat = "identity") +
+  ggtitle("Average Attendance vs. Opponents in 2014") +
+  theme(axis.title.x = element_text(size = 14)) +
+  theme(axis.title.y = element_text(size = 14)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+  xlab("Opponent") + 
+  ylab("Average Attendance") 
+
+
+kable(baseball_opp14)
+
+# Based on the summary plot and average attendance table with different opponents,
+
+```
+
+```{r}
+# 2013
+# Summary of attendance in seanson 2013 with different opponent.
+# Group by different opponents and arrange the attendance from high to low
+baseball_opp <- baseball_2013 %>% group_by(Opp) %>% summarise(avg_attendance = round(mean(Attendance),digits = 0))
+baseball_opp <- arrange(baseball_opp, desc(avg_attendance))
+
+ggplot(baseball_opp, aes(Opp, avg_attendance)) + 
+  geom_bar(stat = "identity") +
+  ggtitle("Average Attendance vs. Opponents in 2013")+
+  theme(axis.title.x = element_text(size = 14)) +
+  theme(axis.title.y = element_text(size = 14)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+  xlab("Opponent") + 
+  ylab("Average Attendance")
+
+
+kable(baseball_opp)
+```
+
+```{r}
+# Summary of attendance in 6 seansons with different opponent.
+# Group by different opponents and arrange the attendance from high to low
+baseball_opp <- baseball %>% group_by(Opp) %>% summarise(avg_attendance = round(mean(Attendance),digits = 0))
+baseball_opp <- arrange(baseball_opp, desc(avg_attendance))
+
+ggplot(baseball_opp, aes(Opp, avg_attendance)) +
+  geom_bar(stat = "identity") + ggtitle("Average Attendance vs. Opponents in Six Seasons") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(axis.title.x = element_text(size = 14)) +
+  theme(axis.title.y = element_text(size = 14)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+  xlab("Opponent") + 
+  ylab("Average Attendance")
+
+kable(baseball_opp)
+
+```
+
+```{r}
+# How the rain/snowy/windy days will affect the attendance of Red Sox, since base game is hypaethral.
+baseball_SpecialWeather<- baseball11 %>% select(Gm.,Year,DATE, Tm, Time, Attendance,SNOW,PRCP )%>% filter(PRCP!=0)
+
+# The rain influences on Red Sox attendence
+plot1<-ggplot(baseball_SpecialWeather, aes(PRCP, Attendance)) + 
+  geom_point(color = "blue") + 
+  geom_smooth(method = "lm", color = "red") + 
+  ggtitle("Precipitation vs. Attendance (2013-2017)") +
+  theme(axis.title.x = element_text(size = 14)) +
+  theme(axis.title.y = element_text(size = 14)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+  xlab("Precipitation on Game Day (mm)") + 
+  ylab("Total Attendance")
+
+# The snow influences on Red Sox attendence
+plot2<-ggplot(baseball_SpecialWeather, aes(SNOW, Attendance)) + 
+  geom_point(color = "blue") + 
+  geom_smooth(method = "lm", color = "red") + 
+  ggtitle("Snow vs. Attendance (2013-2017)") +
+  theme(axis.title.x = element_text(size = 14)) +
+  theme(axis.title.y = element_text(size = 14)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+  xlab("Whether snow on Game Day ") + 
+  ylab("Total Attendance")
+
+plot1
+plot2
+
+#Conclusion: Rain has little influcences on attendence, but snow has obvious influcences on attendence.
+```
+
+
+```{r}
+baseball_SpecialWeather17 <- baseball_SpecialWeather %>% filter(Year == 2017)
+baseball_SpecialWeather16 <- baseball_SpecialWeather %>% filter(Year == 2016)
+baseball_SpecialWeather15 <- baseball_SpecialWeather %>% filter(Year == 2015)
+baseball_SpecialWeather14 <- baseball_SpecialWeather %>% filter(Year == 2014)
+baseball_SpecialWeather13 <- baseball_SpecialWeather %>% filter(Year == 2013)
+
+# Rain influences on Red Sox attendence in 2017:
+plot17<-ggplot(baseball_SpecialWeather17, aes(PRCP, Attendance)) + 
+  geom_point(color = "blue") + 
+  geom_smooth(method = "lm", color = "red") + 
+  ggtitle("Precipitation vs. Attendance (2017)") +
+  theme(axis.title.x = element_text(size = 14)) +
+  theme(axis.title.y = element_text(size = 14)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+  xlab("Precipitation on Game Day (mm)") + 
+  ylab("Total Attendance")
+
+# The rain influences on Red Sox attendence in 2016:
+plot16<-ggplot(baseball_SpecialWeather16, aes(PRCP, Attendance)) + 
+  geom_point(color = "blue") + 
+  geom_smooth(method = "lm", color = "red") + 
+  ggtitle("Precipitation vs. Attendance (2016)") +
+  theme(axis.title.x = element_text(size = 14)) +
+  theme(axis.title.y = element_text(size = 14)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+  xlab("Precipitation on Game Day (mm)") + 
+  ylab("Total Attendance")
+
+# The rain influences on Red Sox attendence in 2015:
+plot15<-ggplot(baseball_SpecialWeather15, aes(PRCP, Attendance)) + 
+  geom_point(color = "blue") + 
+  geom_smooth(method = "lm", color = "red") + 
+  ggtitle("Precipitation vs. Attendance (2015)") +
+  theme(axis.title.x = element_text(size = 14)) +
+  theme(axis.title.y = element_text(size = 14)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+  xlab("Precipitation on Game Day (mm)") + 
+  ylab("Total Attendance")
+
+# The rain influences on Red Sox attendence in 2014:
+plot14<-ggplot(baseball_SpecialWeather14, aes(PRCP, Attendance)) + 
+  geom_point(color = "blue") + 
+  geom_smooth(method = "lm", color = "red") + 
+  ggtitle("Precipitation vs. Attendance (2014)") +
+  theme(axis.title.x = element_text(size = 14)) +
+  theme(axis.title.y = element_text(size = 14)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+  xlab("Precipitation on Game Day (mm)") + 
+  ylab("Total Attendance")
+
+# The rain influences on Red Sox attendence in 2013:
+plot13<-ggplot(baseball_SpecialWeather13, aes(PRCP, Attendance)) + 
+  geom_point(color = "blue") + 
+  geom_smooth(method = "lm", color = "red") + 
+  ggtitle("Precipitation vs. Attendance (2013)") +
+  theme(axis.title.x = element_text(size = 14)) +
+  theme(axis.title.y = element_text(size = 14)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 16)) +
+  xlab("Precipitation on Game Day (mm)") + 
+  ylab("Total Attendance")
+
+plot17
+plot16
+plot15
+plot14
+plot13
+```
+
