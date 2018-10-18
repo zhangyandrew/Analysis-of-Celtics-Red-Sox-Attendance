@@ -197,6 +197,7 @@ kable(baseball_opp)
 ```{r}
 # Summary of attendance in 6 seansons with different opponent.
 # Group by different opponents and arrange the attendance from high to low
+<<<<<<< HEAD
 baseball_opp <- baseball %>% group_by(Opp) %>% summarise(avg_attendance = round(mean(avg_attendance),digits = 0))
 baseball_opp <- arrange(baseball_opp, desc(avg_attendance))
 
@@ -207,6 +208,14 @@ ggplot(baseball, aes(Opp, avg_attendance)) +
   xlab("Opponent") + 
   ylab("Average Attendance")
 
+=======
+baseball_opp <- baseball %>% group_by(Opp) %>% summarise(avg_attendance = mean(avg_attendance))
+baseball <- arrange(baseball_opp, desc(avg_attendance))
+
+ggplot(baseball, aes(Opp, avg_attendance)) +
+  geom_bar(stat = "identity") + ggtitle("Average attendance vs. opponents in six seasons") + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+>>>>>>> 129505194fe9a1a2e8c2f16ee32e6d2002cf1ac9
 
 kable(baseball_opp)
 ```
