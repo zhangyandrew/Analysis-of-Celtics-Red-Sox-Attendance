@@ -36,17 +36,17 @@ data3 <- readHTMLTable(urldata3)
 data4 <- readHTMLTable(urldata4)
 data5 <- readHTMLTable(urldata5)
 
-data1 <- data.frame(data1)
-data2 <- data.frame(data2)
-data3 <- data.frame(data3)
-data4 <- data.frame(data4)
-data5 <- data.frame(data5)
+data1 <- data.frame(data1[3])
+data2 <- data.frame(data2[3])
+data3 <- data.frame(data3[3])
+data4 <- data.frame(data4[3])
+data5 <- data.frame(data5[3])
 
-cdata1 <- data1_d[-(1:2), ]
-cdata2 <- data2_d[-(1:2), ]
-cdata3 <- data3_d[-(1:2), ]
-cdata4 <- data4_d[-(1:2), ]
-cdata5 <- data5_d[-(1:2), ]
+cdata1 <- data1[-(1:2), ]
+cdata2 <- data2[-(1:2), ]
+cdata3 <- data3[-(1:2), ]
+cdata4 <- data4[-(1:2), ]
+cdata5 <- data5[-(1:2), ]
 
 hwdata1 <- sapply("vs", grepl, cdata1$NULL.V2)
 hwdata2 <- sapply("vs", grepl, cdata2$NULL.V2)
@@ -95,11 +95,11 @@ url2012_len <- length(match_g1)
 urlelse_len <- length(match_g2)
 
 ## 2012 Season
-for (i in 1:url2012_len+1){
+for (i in 1:url2012_len){
   attend1[i] <- readLines(match_g1[i])[grep("text/javascript", readLines(match_g1[i]))]
 }
 
-for (i in 1:url2012_len+1){
+for (i in 1:url2012_len){
   attend1[i] <- readLines(match_g1[i])[grep("Attendance", readLines(match_g1[i]))]
   attend1[i] <- rm_between(readLines(match_g1[i])[grep("Attendance", readLines(match_g1[i]))], "<div class=\"game-info-note capacity\">Attendance:", "</div>", extract = TRUE)
 }
@@ -108,11 +108,11 @@ attend1 <- data.frame(attend1, stringsAsFactors = FALSE)
 colnames(attend1) <- "Attendance"
 
 ## 2013 Season
-for (i in 1:urlelse_len+1){
+for (i in 1:urlelse_len){
   attend2[i] <- readLines(match_g2[i])[grep("text/javascript", readLines(match_g2[i]))]
 }
 
-for (i in 1:urlelse_len+1){
+for (i in 1:urlelse_len){
   attend2[i] <- readLines(match_g2[i])[grep("Attendance", readLines(match_g2[i]))]
   attend2[i] <- rm_between(readLines(match_g2[i])[grep("Attendance", readLines(match_g2[i]))], "<div class=\"game-info-note capacity\">Attendance:", "</div>", extract = TRUE)
 }
@@ -158,33 +158,6 @@ for (i in 1:urlelse_len+1){
 
 attend5 <- data.frame(attend5, stringsAsFactors = FALSE)
 colnames(attend5) <- "Attendance"
-```
-
-```{r per 1 game example}
-html <- paste(readLines(urls[1]), collapse="\n")
-matched <- str_match_all(html, "<a href=\"(.*?)\"")
-matched <- data.frame(matched)
-
-match_g <- matched$X2[sapply("http://www.espn.com/nba/game", grepl, matched$X2)]
-match_g <- as.character(match_g)
-
-url2012_len <- length(match_g)
-#url20_len <- length(match_else)
-
-attend <- c()
-
-for (i in 1:url2012_len){
-  attend[i] <- readLines(match_g[i])[grep("text/javascript", readLines(match_g[i]))]
-}
-
-for (i in 1:url2012_len){
-  attend[i] <- readLines(match_g[i])[grep("Capacity", readLines(match_g[i]))]
-  attend[i] <- rm_between(readLines(match_g[i])[grep("Capacity", readLines(match_g[i]))], "<div class=\"game-info-note capacity\">Capacity:", "</div>", extract = TRUE)
-}
-
-attend <- data.frame(attend, stringsAsFactors = FALSE)
-colnames(attend) <- "Attendance"
-#attend$Attendance <- as.numeric()
 ```
 
 ```{r combine}
@@ -267,4 +240,18 @@ wattend2013 <- merge(attend2013, weather, by = "Date")
 wattend2014 <- merge(attend2014, weather, by = "Date")
 wattend2015 <- merge(attend2015, weather, by = "Date")
 wattend2016 <- merge(attend2016, weather, by = "Date")
+
+wattend2012$Attendance <- as.numeric(gsub(",", "", wattend2012$Attendance))
+wattend2013$Attendance <- as.numeric(gsub(",", "", wattend2013$Attendance))
+wattend2014$Attendance <- as.numeric(gsub(",", "", wattend2014$Attendance))
+wattend2015$Attendance <- as.numeric(gsub(",", "", wattend2015$Attendance))
+wattend2016$Attendance <- as.numeric(gsub(",", "", wattend2016$Attendance))
+```
+
+```{r export to csv}
+write.csv(wattend2012, file = "attend2012.csv", row.names = FALSE)
+write.csv(wattend2013, file = "attend2013.csv", row.names = FALSE)
+write.csv(wattend2014, file = "attend2014.csv", row.names = FALSE)
+write.csv(wattend2015, file = "attend2015.csv", row.names = FALSE)
+write.csv(wattend2016, file = "attend2016.csv", row.names = FALSE)
 ```
