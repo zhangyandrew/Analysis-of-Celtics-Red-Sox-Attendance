@@ -24,6 +24,7 @@ ui <- pageWithSidebar(
                 choices = c(  "Baseball_Attendance&Weather",
                               "Baseball_Attendance&Weather2017",
                               "Baseball_Attendance&Weather2013",
+                              "Baseball_Attendance&Opponent",
                               "Baseball_Attendance&Opponent2017",
                               "Baseball_Attendance&Opponent2013",
                               "Basketball_Attendance_Weather"
@@ -41,7 +42,7 @@ ui <- pageWithSidebar(
   
   # Show a plot of the generated distribution
   mainPanel(
-    h3(textOutput("caption")),
+    #h3(textOutput("caption")),
     plotOutput("baseball_plot"),
     #h4("Summary"),
     #verbatimTextOutput("summary"),
@@ -52,6 +53,8 @@ ui <- pageWithSidebar(
 
 Baseball_Attendance_weather<-read.csv("baseball00.csv")  
 baseball_alltime<-Baseball_Attendance_weather
+baseball_opponent <- baseball %>% group_by(Opp) %>% summarise(avg_attendance = round(mean(Attendance),digits = 0))
+baseball_opponent <- arrange(baseball_opponent, desc(avg_attendance))
 baseball_2017<-Baseball_Attendance_weather %>% filter(Year == 2017)
 baseball_opp <- baseball_2017 %>% group_by(Opp) %>% summarise(avg_attendance = mean(Attendance))
 baseball_opp <- arrange(baseball_opp, desc(avg_attendance))
@@ -67,6 +70,7 @@ server <- function(input, output) {
            "Baseball_Attendance&Weather"=baseball_alltime,
            "Baseball_Attendance&Weather2017"=baseball_2017,
            "Baseball_Attendance&Weather2013"=baseball_2013,
+           "Baseball_Attendance&Opponent"=baseball_opponent,
            "Baseball_Attendance&Opponent2017"=baseball_opp,
            "Baseball_Attendance&Opponent2013"=baseball_oppo,
            "Basketball_Attendance_Weather"=Basketball_Attendance_weather)
@@ -111,12 +115,21 @@ server <- function(input, output) {
     }
     else if(input$dataset=="Baseball_Attendance&Weather2013"){
       ggplot(baseball_2013, aes(x=TAVG,y= Attendance)) + geom_point(color = "blue") + 
-        geom_smooth(method = "lm", color = "red") + ggtitle("Temperature vs. Attendance in 2012")
+        geom_smooth(method = "lm", color = "red") + ggtitle("Temperature vs. Attendance in 2013")
     }
     
     else if(input$dataset=="Baseball_Attendance&Weather2017"){
       ggplot(baseball_2017, aes(x=TAVG,y= Attendance)) + geom_point(color = "blue") + 
         geom_smooth(method = "lm", color = "red") + ggtitle("Temperature vs. Attendance in 2017")
+    }
+    else if(input$dataset=="Baseball_Attendance&Opponent"){
+      ggplot(baseball_opponent, aes(Opp, avg_attendance)) +
+        geom_bar(stat = "identity") + ggtitle("Average Attendance vs. Opponents in Six seasons") + 
+        theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+        theme(plot.title = element_text(hjust = 0.5)) +
+        xlab("Opponent") + 
+        ylab("Average Attendance")
+      
     }
     else if(input$dataset=="Baseball_Attendance&Opponent2017"){
       ggplot(baseball_opp, aes(Opp, avg_attendance)) + 
