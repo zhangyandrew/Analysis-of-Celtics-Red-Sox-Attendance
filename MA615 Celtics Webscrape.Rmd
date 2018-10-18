@@ -13,7 +13,7 @@ library(dplyr)
 #Specifying the url for desired website to be scrapped
 url1 <- 'http://www.espn.com/nba/team/schedule/_/name/bos/season/'
 
-year <- c('2012', '2013', '2014', '2015', '2016')
+year <- c('2013', '2014', '2015', '2016', '2017')
 
 url2 <- '/seasontype/2'
 
@@ -91,15 +91,14 @@ attend3 <- c()
 attend4 <- c()
 attend5 <- c()
 
-url2012_len <- length(match_g1)
-urlelse_len <- length(match_g2)
+urlelse_len <- length(match_g1)
 
 ## 2012 Season
-for (i in 1:url2012_len){
+for (i in 1:urlelse_len){
   attend1[i] <- readLines(match_g1[i])[grep("text/javascript", readLines(match_g1[i]))]
 }
 
-for (i in 1:url2012_len){
+for (i in 1:urlelse_len){
   attend1[i] <- readLines(match_g1[i])[grep("Attendance", readLines(match_g1[i]))]
   attend1[i] <- rm_between(readLines(match_g1[i])[grep("Attendance", readLines(match_g1[i]))], "<div class=\"game-info-note capacity\">Attendance:", "</div>", extract = TRUE)
 }
@@ -108,11 +107,11 @@ attend1 <- data.frame(attend1, stringsAsFactors = FALSE)
 colnames(attend1) <- "Attendance"
 
 ## 2013 Season
-for (i in 1:urlelse_len){
+for (i in 1:urlelse_len+1){
   attend2[i] <- readLines(match_g2[i])[grep("text/javascript", readLines(match_g2[i]))]
 }
 
-for (i in 1:urlelse_len){
+for (i in 1:urlelse_len+1){
   attend2[i] <- readLines(match_g2[i])[grep("Attendance", readLines(match_g2[i]))]
   attend2[i] <- rm_between(readLines(match_g2[i])[grep("Attendance", readLines(match_g2[i]))], "<div class=\"game-info-note capacity\">Attendance:", "</div>", extract = TRUE)
 }
@@ -133,6 +132,8 @@ for (i in 1:urlelse_len+1){
 attend3 <- data.frame(attend3, stringsAsFactors = FALSE)
 colnames(attend3) <- "Attendance"
 
+attend3[1] <- 18624
+
 ## 2015
 for (i in 1:urlelse_len+1){
   attend4[i] <- readLines(match_g4[i])[grep("text/javascript", readLines(match_g4[i]))]
@@ -146,6 +147,8 @@ for (i in 1:urlelse_len+1){
 attend4 <- data.frame(attend4, stringsAsFactors = FALSE)
 colnames(attend4) <- "Attendance"
 
+attend4[1] <- 18624
+
 ## 2016 Season
 for (i in 1:urlelse_len+1){
   attend5[i] <- readLines(match_g5[i])[grep("text/javascript", readLines(match_g5[i]))]
@@ -158,23 +161,25 @@ for (i in 1:urlelse_len+1){
 
 attend5 <- data.frame(attend5, stringsAsFactors = FALSE)
 colnames(attend5) <- "Attendance"
+
+attend5[1] <- 18624
 ```
 
 ```{r combine}
 attend2012 <- data.frame(t(attend1))
-attend2012 <- cbind(attend2012, cdata1$NULL.V1, cdata1$NULL.V2, hwdata1)
+attend2012 <- cbind(attend2012, cdata1$NULL.V1[-81], cdata1$NULL.V2[-81], hwdata1[-81])
 
 attend2013 <- data.frame(t(attend2))
-attend2013 <- cbind(attend2013, cdata2$NULL.V1[-81], cdata2$NULL.V2[-81], hwdata2[-81,])
+attend2013 <- cbind(attend2013, cdata2$NULL.V1, cdata2$NULL.V2, hwdata2)
 
 attend2014 <- data.frame(t(attend3))
 attend2014 <- cbind(attend2014, cdata3$NULL.V1, cdata3$NULL.V2, hwdata3)
 
 attend2015 <- data.frame(t(attend4))
-attend2015 <- cbind(attend2015, cdata4$NULL.V1, cdata4$NULL.V2, hwdata4)
+attend2015 <- cbind(attend2015, cdata4$NULL.V1[-47], cdata4$NULL.V2[-47], hwdata4[-47])
 
 attend2016 <- data.frame(t(attend5))
-attend2016 <- cbind(attend2016,  cdata5$NULL.V1[-47], cdata5$NULL.V2[-47], hwdata5[-47])
+attend2016 <- cbind(attend2016,  cdata5$NULL.V1, cdata5$NULL.V2, hwdata5)
 
 colnames(attend2012) <- c("Attendance", "Date", "Opponent", "Vs")
 colnames(attend2013) <- c("Attendance", "Date", "Opponent", "Vs")
@@ -197,20 +202,20 @@ attend2014$Date <- as.character(attend2014$Date)
 attend2015$Date <- as.character(attend2015$Date)
 attend2016$Date <- as.character(attend2016$Date)
 
-attend2012$Date[1] <- str_c(attend2012$Date[1], " 2011")
-attend2012$Date[2:33] <- str_c(attend2012$Date[2:33], " 2012")
+attend2012$Date[1:14] <- str_c(attend2012$Date[1:14], " 2011")
+attend2012$Date[15:40] <- str_c(attend2012$Date[15:40], " 2012")
 
-attend2013$Date[1:14] <- str_c(attend2013$Date[1:14], " 2012")
-attend2013$Date[15:40] <- str_c(attend2013$Date[15:40], " 2013")
+attend2013$Date[1:17] <- str_c(attend2013$Date[1:17], " 2012")
+attend2013$Date[18:41] <- str_c(attend2013$Date[18:41], " 2013")
 
 attend2014$Date[1:17] <- str_c(attend2014$Date[1:17], " 2013")
 attend2014$Date[18:41] <- str_c(attend2014$Date[18:41], " 2014")
 
 attend2015$Date[1:17] <- str_c(attend2015$Date[1:17], " 2014")
-attend2015$Date[18:41] <- str_c(attend2015$Date[18:41], " 2015")
+attend2015$Date[18:42] <- str_c(attend2015$Date[18:42], " 2015")
 
-attend2016$Date[1:17] <- str_c(attend2016$Date[1:17], " 2015")
-attend2016$Date[18:42] <- str_c(attend2016$Date[18:42], " 2016")
+attend2016$Date[1:14] <- str_c(attend2016$Date[1:14], " 2016")
+attend2016$Date[15:41] <- str_c(attend2016$Date[15:41], " 2017")
 
 days <- c("Mon, ", "Tue, ", "Wed, ", "Thu, ", "Fri, ", "Sat, ", "Sun, ")
 
@@ -247,11 +252,17 @@ wattend2014$Attendance <- as.numeric(gsub(",", "", wattend2014$Attendance))
 wattend2015$Attendance <- as.numeric(gsub(",", "", wattend2015$Attendance))
 wattend2016$Attendance <- as.numeric(gsub(",", "", wattend2016$Attendance))
 
-wattend2012$Year <- 2012
-wattend2013$Year <- 2013
-wattend2014$Year <- 2014
-wattend2015$Year <- 2015
-wattend2016$Year <- 2016
+wattend2012$Opponent <- substring(wattend2012$Opponent, 3)
+wattend2013$Opponent <- substring(wattend2013$Opponent, 3)
+wattend2014$Opponent <- substring(wattend2014$Opponent, 3)
+wattend2015$Opponent <- substring(wattend2015$Opponent, 3)
+wattend2016$Opponent <- substring(wattend2016$Opponent, 3)
+
+wattend2012$Year <- 2013
+wattend2013$Year <- 2014
+wattend2014$Year <- 2015
+wattend2015$Year <- 2016
+wattend2016$Year <- 2017
 ```
 
 ```{r export to csv}
