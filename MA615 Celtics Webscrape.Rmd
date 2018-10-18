@@ -267,5 +267,4 @@ wattend2013 <- merge(attend2013, weather, by = "Date")
 wattend2014 <- merge(attend2014, weather, by = "Date")
 wattend2015 <- merge(attend2015, weather, by = "Date")
 wattend2016 <- merge(attend2016, weather, by = "Date")
-
 ```
