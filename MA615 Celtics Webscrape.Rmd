@@ -1,0 +1,270 @@
+---
+title: "MA615 Midterm Project"
+author: "Andrew Zhang"
+date: "10/5/2018"
+output: pdf_document
+---
+
+```{r Date/Home}
+library(tidyverse)
+library(stringr)
+library(dplyr)
+
+#Specifying the url for desired website to be scrapped
+url1 <- 'http://www.espn.com/nba/team/schedule/_/name/bos/season/'
+
+year <- c('2012', '2013', '2014', '2015', '2016')
+
+url2 <- '/seasontype/2'
+
+urls <- str_c(url1, year, url2, sep = '')
+
+library(XML)
+library(RCurl)
+library(rvest)
+library(qdapRegex)
+
+urldata1 <- getURL(urls[1])
+urldata2 <- getURL(urls[2])
+urldata3 <- getURL(urls[3])
+urldata4 <- getURL(urls[4])
+urldata5 <- getURL(urls[5])
+
+data1 <- readHTMLTable(urldata1)
+data2 <- readHTMLTable(urldata2)
+data3 <- readHTMLTable(urldata3)
+data4 <- readHTMLTable(urldata4)
+data5 <- readHTMLTable(urldata5)
+
+data1 <- data.frame(data1)
+data2 <- data.frame(data2)
+data3 <- data.frame(data3)
+data4 <- data.frame(data4)
+data5 <- data.frame(data5)
+
+cdata1 <- data1_d[-(1:2), ]
+cdata2 <- data2_d[-(1:2), ]
+cdata3 <- data3_d[-(1:2), ]
+cdata4 <- data4_d[-(1:2), ]
+cdata5 <- data5_d[-(1:2), ]
+
+hwdata1 <- sapply("vs", grepl, cdata1$NULL.V2)
+hwdata2 <- sapply("vs", grepl, cdata2$NULL.V2)
+hwdata3 <- sapply("vs", grepl, cdata3$NULL.V2)
+hwdata4 <- sapply("vs", grepl, cdata4$NULL.V2)
+hwdata5 <- sapply("vs", grepl, cdata5$NULL.V2)
+```
+
+```{r Attendance}
+url_len <- length(urls)
+
+a <- c()
+b <- c()
+b1 <- c()
+
+for (i in 1:url_len){
+  a[i] <- paste(readLines(urls[i]), collapse = "\n")
+  b[i] <- str_match_all(a[i], "<a href=\"(.*?)\"")
+}
+
+b_n1 <- data.frame(b[1])
+b_n2 <- data.frame(b[2])
+b_n3 <- data.frame(b[3])
+b_n4 <- data.frame(b[4])
+b_n5 <- data.frame(b[5])
+
+match_g1 <- b_n1$X2[sapply("http://www.espn.com/nba/game", grepl, b_n1$X2)]
+match_g2 <- b_n2$X2[sapply("http://www.espn.com/nba/game", grepl, b_n2$X2)]
+match_g3 <- b_n3$X2[sapply("http://www.espn.com/nba/game", grepl, b_n3$X2)]
+match_g4 <- b_n4$X2[sapply("http://www.espn.com/nba/game", grepl, b_n4$X2)]
+match_g5 <- b_n5$X2[sapply("http://www.espn.com/nba/game", grepl, b_n5$X2)]
+
+match_g1 <- as.character(match_g1)
+match_g2 <- as.character(match_g2)
+match_g3 <- as.character(match_g3)
+match_g4 <- as.character(match_g4)
+match_g5 <- as.character(match_g5)
+
+attend1 <- c()
+attend2 <- c()
+attend3 <- c()
+attend4 <- c()
+attend5 <- c()
+
+url2012_len <- length(match_g1)
+urlelse_len <- length(match_g2)
+
+## 2012 Season
+for (i in 1:url2012_len+1){
+  attend1[i] <- readLines(match_g1[i])[grep("text/javascript", readLines(match_g1[i]))]
+}
+
+for (i in 1:url2012_len+1){
+  attend1[i] <- readLines(match_g1[i])[grep("Attendance", readLines(match_g1[i]))]
+  attend1[i] <- rm_between(readLines(match_g1[i])[grep("Attendance", readLines(match_g1[i]))], "<div class=\"game-info-note capacity\">Attendance:", "</div>", extract = TRUE)
+}
+
+attend1 <- data.frame(attend1, stringsAsFactors = FALSE)
+colnames(attend1) <- "Attendance"
+
+## 2013 Season
+for (i in 1:urlelse_len+1){
+  attend2[i] <- readLines(match_g2[i])[grep("text/javascript", readLines(match_g2[i]))]
+}
+
+for (i in 1:urlelse_len+1){
+  attend2[i] <- readLines(match_g2[i])[grep("Attendance", readLines(match_g2[i]))]
+  attend2[i] <- rm_between(readLines(match_g2[i])[grep("Attendance", readLines(match_g2[i]))], "<div class=\"game-info-note capacity\">Attendance:", "</div>", extract = TRUE)
+}
+
+attend2 <- data.frame(attend2, stringsAsFactors = FALSE)
+colnames(attend2) <- "Attendance"
+
+## 2014
+for (i in 1:urlelse_len+1){
+  attend3[i] <- readLines(match_g3[i])[grep("text/javascript", readLines(match_g3[i]))]
+}
+
+for (i in 1:urlelse_len+1){
+  attend3[i] <- readLines(match_g3[i])[grep("Attendance", readLines(match_g3[i]))]
+  attend3[i] <- rm_between(readLines(match_g3[i])[grep("Attendance", readLines(match_g3[i]))], "<div class=\"game-info-note capacity\">Attendance:", "</div>", extract = TRUE)
+}
+
+attend3 <- data.frame(attend3, stringsAsFactors = FALSE)
+colnames(attend3) <- "Attendance"
+
+## 2015
+for (i in 1:urlelse_len+1){
+  attend4[i] <- readLines(match_g4[i])[grep("text/javascript", readLines(match_g4[i]))]
+}
+
+for (i in 1:urlelse_len+1){
+  attend4[i] <- readLines(match_g4[i])[grep("Attendance", readLines(match_g4[i]))]
+  attend4[i] <- rm_between(readLines(match_g4[i])[grep("Attendance", readLines(match_g4[i]))], "<div class=\"game-info-note capacity\">Attendance:", "</div>", extract = TRUE)
+}
+
+attend4 <- data.frame(attend4, stringsAsFactors = FALSE)
+colnames(attend4) <- "Attendance"
+
+## 2016 Season
+for (i in 1:urlelse_len+1){
+  attend5[i] <- readLines(match_g5[i])[grep("text/javascript", readLines(match_g5[i]))]
+}
+
+for (i in 1:urlelse_len+1){
+  attend5[i] <- readLines(match_g5[i])[grep("Attendance", readLines(match_g5[i]))]
+  attend5[i] <- rm_between(readLines(match_g5[i])[grep("Attendance", readLines(match_g5[i]))], "<div class=\"game-info-note capacity\">Attendance:", "</div>", extract = TRUE)
+}
+
+attend5 <- data.frame(attend5, stringsAsFactors = FALSE)
+colnames(attend5) <- "Attendance"
+```
+
+```{r per 1 game example}
+html <- paste(readLines(urls[1]), collapse="\n")
+matched <- str_match_all(html, "<a href=\"(.*?)\"")
+matched <- data.frame(matched)
+
+match_g <- matched$X2[sapply("http://www.espn.com/nba/game", grepl, matched$X2)]
+match_g <- as.character(match_g)
+
+url2012_len <- length(match_g)
+#url20_len <- length(match_else)
+
+attend <- c()
+
+for (i in 1:url2012_len){
+  attend[i] <- readLines(match_g[i])[grep("text/javascript", readLines(match_g[i]))]
+}
+
+for (i in 1:url2012_len){
+  attend[i] <- readLines(match_g[i])[grep("Capacity", readLines(match_g[i]))]
+  attend[i] <- rm_between(readLines(match_g[i])[grep("Capacity", readLines(match_g[i]))], "<div class=\"game-info-note capacity\">Capacity:", "</div>", extract = TRUE)
+}
+
+attend <- data.frame(attend, stringsAsFactors = FALSE)
+colnames(attend) <- "Attendance"
+#attend$Attendance <- as.numeric()
+```
+
+```{r combine}
+attend2012 <- data.frame(t(attend1))
+attend2012 <- cbind(attend2012, cdata1$NULL.V1, cdata1$NULL.V2, hwdata1)
+
+attend2013 <- data.frame(t(attend2))
+attend2013 <- cbind(attend2013, cdata2$NULL.V1[-81], cdata2$NULL.V2[-81], hwdata2[-81,])
+
+attend2014 <- data.frame(t(attend3))
+attend2014 <- cbind(attend2014, cdata3$NULL.V1, cdata3$NULL.V2, hwdata3)
+
+attend2015 <- data.frame(t(attend4))
+attend2015 <- cbind(attend2015, cdata4$NULL.V1, cdata4$NULL.V2, hwdata4)
+
+attend2016 <- data.frame(t(attend5))
+attend2016 <- cbind(attend2016,  cdata5$NULL.V1[-47], cdata5$NULL.V2[-47], hwdata5[-47])
+
+colnames(attend2012) <- c("Attendance", "Date", "Opponent", "Vs")
+colnames(attend2013) <- c("Attendance", "Date", "Opponent", "Vs")
+colnames(attend2014) <- c("Attendance", "Date", "Opponent", "Vs")
+colnames(attend2015) <- c("Attendance", "Date", "Opponent", "Vs")
+colnames(attend2016) <- c("Attendance", "Date", "Opponent", "Vs")
+```
+
+```{r subset}
+require(tm)
+attend2012 <- subset(attend2012, attend2012$Vs == TRUE)
+attend2013 <- subset(attend2013, attend2013$Vs == TRUE)
+attend2014 <- subset(attend2014, attend2014$Vs == TRUE)
+attend2015 <- subset(attend2015, attend2015$Vs == TRUE)
+attend2016 <- subset(attend2016, attend2016$Vs == TRUE)
+
+attend2012$Date <- as.character(attend2012$Date)
+attend2013$Date <- as.character(attend2013$Date)
+attend2014$Date <- as.character(attend2014$Date)
+attend2015$Date <- as.character(attend2015$Date)
+attend2016$Date <- as.character(attend2016$Date)
+
+attend2012$Date[1] <- str_c(attend2012$Date[1], " 2011")
+attend2012$Date[2:33] <- str_c(attend2012$Date[2:33], " 2012")
+
+attend2013$Date[1:14] <- str_c(attend2013$Date[1:14], " 2012")
+attend2013$Date[15:40] <- str_c(attend2013$Date[15:40], " 2013")
+
+attend2014$Date[1:17] <- str_c(attend2014$Date[1:17], " 2013")
+attend2014$Date[18:41] <- str_c(attend2014$Date[18:41], " 2014")
+
+attend2015$Date[1:17] <- str_c(attend2015$Date[1:17], " 2014")
+attend2015$Date[18:41] <- str_c(attend2015$Date[18:41], " 2015")
+
+attend2016$Date[1:17] <- str_c(attend2016$Date[1:17], " 2015")
+attend2016$Date[18:42] <- str_c(attend2016$Date[18:42], " 2016")
+
+days <- c("Mon, ", "Tue, ", "Wed, ", "Thu, ", "Fri, ", "Sat, ", "Sun, ")
+
+attend2012$Date <- sapply(attend2012$Date, removeWords, days)
+attend2013$Date <- sapply(attend2013$Date, removeWords, days)
+attend2014$Date <- sapply(attend2014$Date, removeWords, days)
+attend2015$Date <- sapply(attend2015$Date, removeWords, days)
+attend2016$Date <- sapply(attend2016$Date, removeWords, days)
+```
+
+```{r weather}
+library(tidyverse)
+
+setwd("/Users/andrewzhang/Desktop/School/Graduate/MA615/MA615 Midterm Project")
+weather <- read.csv("weather.csv")
+weather$DATE <- as.Date(weather$DATE, format = "%m/%d/%Y")
+colnames(weather)[6] <- "Date"
+
+attend2012$Date <- as.Date(attend2012$Date, format = "%B %d %Y")
+attend2013$Date <- as.Date(attend2013$Date, format = "%B %d %Y")
+attend2014$Date <- as.Date(attend2014$Date, format = "%B %d %Y")
+attend2015$Date <- as.Date(attend2015$Date, format = "%B %d %Y")
+attend2016$Date <- as.Date(attend2016$Date, format = "%B %d %Y")
+
+wattend2012 <- merge(attend2012, weather, by = "Date")
+wattend2013 <- merge(attend2013, weather, by = "Date")
+wattend2014 <- merge(attend2014, weather, by = "Date")
+wattend2015 <- merge(attend2015, weather, by = "Date")
+wattend2016 <- merge(attend2016, weather, by = "Date")
+```
