@@ -246,6 +246,12 @@ wattend2013$Attendance <- as.numeric(gsub(",", "", wattend2013$Attendance))
 wattend2014$Attendance <- as.numeric(gsub(",", "", wattend2014$Attendance))
 wattend2015$Attendance <- as.numeric(gsub(",", "", wattend2015$Attendance))
 wattend2016$Attendance <- as.numeric(gsub(",", "", wattend2016$Attendance))
+
+wattend2012$Year <- 2012
+wattend2013$Year <- 2013
+wattend2014$Year <- 2014
+wattend2015$Year <- 2015
+wattend2016$Year <- 2016
 ```
 
 ```{r export to csv}
