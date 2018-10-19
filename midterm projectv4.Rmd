@@ -356,6 +356,7 @@ bball <- rbind(bball12, bball13, bball14, bball15, bball16)
 bball$Year <- factor(bball$Year)
 colnames(bball)[3] <- "Opp"
 bball$Opp <- factor(bball$Opp)
+View(bball)
 ```
 
 ```{r}
@@ -562,5 +563,31 @@ ggplot(bball_opp, aes(Opp, avg_attendance)) +
   ylab("Average Attendance")
 
 knitr::kable(bball_opp)
+```
+
+```{r}
+library(tidyverse)
+basketball_WeatherAll<-read.csv("bball.csv")
+basketball_SpecialWeather<- basketball_WeatherAll %>% select(Year,Date, Attendance,AWND,PRCP ) 
+
+library(gridExtra)
+plot1<-ggplot(basketball_SpecialWeather, aes(PRCP, Attendance)) + 
+  geom_point(mapping=aes(color = Year)) + 
+  geom_smooth() + 
+  ggtitle("Precipitation vs. Attendance (2013-2017)") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  xlab("Precipitation on Game Day (mm)") + 
+  ylab("Total Attendance")
+# The snow influences on Red Sox attendence
+plot2<-ggplot(basketball_SpecialWeather, aes(AWND,Attendance)) + 
+  geom_point(mapping=aes(color = Year)) + 
+  geom_smooth() + 
+  ggtitle("Wind vs. Attendance (2013-2017)") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  xlab("Whether snow on Game Day ") + 
+  ylab("Total Attendance")
+#grid.arrange(plot1,plot2,ncol=2)
+plot1
+plot2
 ```
 
