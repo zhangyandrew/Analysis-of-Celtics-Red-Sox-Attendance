@@ -1,6 +1,6 @@
 ---
 title: "midterm_project"
-author: "Ningze Zu"
+author: "Ningze Zu, Jiahao Xu, Andrew Zhang, Albert Ding"
 date: 
 output: pdf_document
 ---
@@ -37,7 +37,6 @@ ggplot(baseball, mapping = aes(x = TAVG, y = Attendance)) +
   ylab("Attendance")
 ```
 
-There appears to be a weak but slightly positive relationship between  average temperature and attendance over the past six seasons.
 
 ```{r}
 # 2017 Season
@@ -107,12 +106,14 @@ ggplot(baseball_2013, aes(TAVG, Attendance)) +
   ylab("Attendance")
 ```
 
+Conclusion: There appears to be a weak but slightly positive relationship between  average temperature and attendance over the past six seasons.
+
 ```{r}
 # 2017
 # Summary of attendance in seanson 2017 with different opponent.
 # Group by different opponents and arrange the attendance from high to low
 baseball_opp17 <- baseball_2017 %>% group_by(Opp) %>% summarise(avg_attendance = round(mean(Attendance),,digits = 0))
-baseball_opp17 <- arrange(baseball_opp, desc(avg_attendance))
+baseball_opp17 <- arrange(baseball_opp17, desc(avg_attendance))
 
 ggplot(baseball_opp17, aes(Opp, avg_attendance)) + 
   geom_bar(stat = "identity") +
@@ -125,10 +126,11 @@ ggplot(baseball_opp17, aes(Opp, avg_attendance)) +
   ylab("Average Attendance") 
 
 
-kable(baseball_opp)
+kable(baseball_opp17)
 
-# Based on the summary plot and average attendance table with different opponents,
+
 ```
+
 ```{r}
 # 2016
 # Summary of attendance in seanson 2016 with different opponent.
@@ -149,7 +151,7 @@ ggplot(baseball_opp16, aes(Opp, avg_attendance)) +
 
 kable(baseball_opp16)
 
-# Based on the summary plot and average attendance table with different opponents,
+
 
 ```
 
@@ -173,9 +175,6 @@ ggplot(baseball_opp15, aes(Opp, avg_attendance)) +
 
 kable(baseball_opp15)
 
-# Based on the summary plot and average attendance table with different opponents,
-
-
 ```
 
 ```{r}
@@ -198,7 +197,6 @@ ggplot(baseball_opp14, aes(Opp, avg_attendance)) +
 
 kable(baseball_opp14)
 
-# Based on the summary plot and average attendance table with different opponents,
 
 ```
 
@@ -206,10 +204,10 @@ kable(baseball_opp14)
 # 2013
 # Summary of attendance in seanson 2013 with different opponent.
 # Group by different opponents and arrange the attendance from high to low
-baseball_opp <- baseball_2013 %>% group_by(Opp) %>% summarise(avg_attendance = round(mean(Attendance),digits = 0))
-baseball_opp <- arrange(baseball_opp, desc(avg_attendance))
+baseball_opp13 <- baseball_2013 %>% group_by(Opp) %>% summarise(avg_attendance = round(mean(Attendance),digits = 0))
+baseball_opp13 <- arrange(baseball_opp13, desc(avg_attendance))
 
-ggplot(baseball_opp, aes(Opp, avg_attendance)) + 
+ggplot(baseball_opp13, aes(Opp, avg_attendance)) + 
   geom_bar(stat = "identity") +
   ggtitle("Average Attendance vs. Opponents in 2013")+
   theme(axis.title.x = element_text(size = 14)) +
@@ -220,7 +218,7 @@ ggplot(baseball_opp, aes(Opp, avg_attendance)) +
   ylab("Average Attendance")
 
 
-kable(baseball_opp)
+kable(baseball_opp13)
 ```
 
 ```{r}
@@ -242,6 +240,7 @@ kable(baseball_opp)
 
 ```
 
+Conclusion: Based on the bar plots, different opponents affect the average attendance of the baseball game.  
 ```{r}
 # How the rain/snowy/windy days will affect the attendance of Red Sox, since base game is hypaethral.
 baseball_SpecialWeather<- baseball11 %>% select(Gm.,Year,DATE, Tm, Time, Attendance,SNOW,PRCP )%>% filter(PRCP!=0)
@@ -271,8 +270,9 @@ plot2<-ggplot(baseball_SpecialWeather, aes(SNOW, Attendance)) +
 plot1
 plot2
 
-#Conclusion: Rain has little influcences on attendence, but snow has obvious influcences on attendence.
 ```
+
+Conclusion: Rain has little influcences on attendence, but snow has obvious influcences on attendence.
 
 
 ```{r}
@@ -356,7 +356,8 @@ bball <- rbind(bball12, bball13, bball14, bball15, bball16)
 bball$Year <- factor(bball$Year)
 colnames(bball)[3] <- "Opp"
 bball$Opp <- factor(bball$Opp)
-View(bball)
+write.csv(bball, file = "bball.csv")
+#View(bball)
 ```
 
 ```{r}
@@ -441,6 +442,8 @@ ggplot(bball_2013, aes(TAVG, Attendance)) +
   xlab("Average Temperature on Game Day (°F)") + 
   ylab("Attendance")
 ```
+
+Conclusion: There are no evident relationship between the average temperature and the attendace of these six seasons game. 
 
 ```{r}
 # 2017
