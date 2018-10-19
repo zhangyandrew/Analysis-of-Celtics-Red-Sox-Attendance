@@ -202,17 +202,17 @@ attend2014$Date <- as.character(attend2014$Date)
 attend2015$Date <- as.character(attend2015$Date)
 attend2016$Date <- as.character(attend2016$Date)
 
-attend2012$Date[1:14] <- str_c(attend2012$Date[1:14], " 2011")
-attend2012$Date[15:40] <- str_c(attend2012$Date[15:40], " 2012")
+attend2012$Date[1:14] <- str_c(attend2012$Date[1:14], " 2012")
+attend2012$Date[15:40] <- str_c(attend2012$Date[15:40], " 2013")
 
-attend2013$Date[1:17] <- str_c(attend2013$Date[1:17], " 2012")
-attend2013$Date[18:41] <- str_c(attend2013$Date[18:41], " 2013")
+attend2013$Date[1:17] <- str_c(attend2013$Date[1:17], " 2013")
+attend2013$Date[18:41] <- str_c(attend2013$Date[18:41], " 2014")
 
-attend2014$Date[1:17] <- str_c(attend2014$Date[1:17], " 2013")
-attend2014$Date[18:41] <- str_c(attend2014$Date[18:41], " 2014")
+attend2014$Date[1:17] <- str_c(attend2014$Date[1:17], " 2014")
+attend2014$Date[18:41] <- str_c(attend2014$Date[18:41], " 2015")
 
-attend2015$Date[1:17] <- str_c(attend2015$Date[1:17], " 2014")
-attend2015$Date[18:42] <- str_c(attend2015$Date[18:42], " 2015")
+attend2015$Date[1:17] <- str_c(attend2015$Date[1:17], " 2015")
+attend2015$Date[18:42] <- str_c(attend2015$Date[18:42], " 2016")
 
 attend2016$Date[1:14] <- str_c(attend2016$Date[1:14], " 2016")
 attend2016$Date[15:41] <- str_c(attend2016$Date[15:41], " 2017")
@@ -258,11 +258,26 @@ wattend2014$Opponent <- substring(wattend2014$Opponent, 3)
 wattend2015$Opponent <- substring(wattend2015$Opponent, 3)
 wattend2016$Opponent <- substring(wattend2016$Opponent, 3)
 
-wattend2012$Year <- 2013
-wattend2013$Year <- 2014
-wattend2014$Year <- 2015
-wattend2015$Year <- 2016
-wattend2016$Year <- 2017
+wattend2012$Year <- 0
+wattend2013$Year <- 0
+wattend2014$Year <- 0
+wattend2015$Year <- 0
+wattend2016$Year <- 0
+
+wattend2012$Year[1:14] <- 2012
+wattend2012$Year[15:40] <- 2013
+
+wattend2013$Year[1:17] <- 2013
+wattend2013$Year[18:41] <- 2014
+
+wattend2014$Year[1:17] <- 2014
+wattend2014$Year[18:41] <- 2015
+
+wattend2015$Year[1:17] <- 2015
+wattend2015$Year[18:42] <- 2016
+
+wattend2016$Year[1:14] <- 2016
+wattend2016$Year[15:41] <- 2017
 ```
 
 ```{r export to csv}
